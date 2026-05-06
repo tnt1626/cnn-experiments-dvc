@@ -1,0 +1,20 @@
+base:
+  batch_size: 256
+  epochs: 20
+  learning_rate: 0.001
+  image_shape:
+  - 3
+  - 32
+  - 32
+  base_activation: sigmoid
+  base_initialization: xavier
+  optimizer: adam
+
+improvements:
+  use_relu: true
+  use_advanced_activation: false
+  use_z_score: false
+  use_batch_norm: false
+  use_he_initialization: false
+  use_skip_connection: false
+  reduce_learning_rate: false

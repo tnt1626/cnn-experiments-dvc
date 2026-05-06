@@ -1,0 +1,76 @@
+from torchvision.datasets import CIFAR10
+from torch.utils.data import DataLoader
+from torchvision.transforms import transforms
+import torch
+import yaml
+import os
+from typing import Tuple
+
+# Load params from params.yaml
+with open("params.yaml", "r") as f:
+    params = yaml.safe_load(f)
+
+def compute_mean_std() -> Tuple[torch.Tensor, torch.Tensor]:
+    # Load dataset with only the ToTensor transform to compute mean and std
+    compute_transform = transforms.Compose([transforms.ToTensor()])
+    train_dataset = CIFAR10("./data/raw", train=True, transform=compute_transform, download=True)
+    loader = DataLoader(train_dataset, batch_size=1024, shuffle=False, num_workers=4)
+
+    mean = 0.0
+    std = 0.0
+    # Get batch of images
+    for images, _ in loader:
+        # Get batch size
+        batch_samples = images.size(0)
+
+        # Fatten image
+        images = images.view(batch_samples, images.size(1), -1)
+
+        # Compute mean for each channel and Cumulative all batches
+        mean += images.mean(2).sum(0)
+
+    mean = mean / len(loader.dataset)
+
+    variance = 0.0
+    for images, _ in loader:
+        batch_samples = images.size(0)
+        images = images.view(batch_samples, images.size(1), -1)
+        variance += ((images - mean.unsqueeze(1))**2).sum([0,2])
+    std = torch.sqrt(variance / (len(loader.dataset)*32*32))
+
+    return mean, std
+
+
+def main():
+    # create processed folder if not exist
+    os.makedirs("data/processed", exist_ok=True)
+
+    # process z-score
+    use_z_score = params['improvements']['use_z_score']
+
+    transform_lst = [transforms.ToTensor()]
+
+    if use_z_score:
+        print(f"-> Applying Z-Score")
+
+        # mean, std = compute_mean_std()
+        transform_lst.append(transforms.Normalize(
+            (0.4914, 0.4822, 0.4465),
+            (0.2470, 0.2435, 0.2616)
+        ))
+    else:
+        print("-> Base Configuration")
+
+    compute_transform = transforms.Compose(transform_lst)
+
+    train_dataset = CIFAR10("./data/raw", train=True, transform=compute_transform, download=True)
+    test_dataset = CIFAR10("./data/raw", train=False, transform=compute_transform, download=True)
+
+    # Save processed data
+    torch.save(train_dataset, "./data/processed/train.pt")
+    torch.save(test_dataset, "./data/processed/test.pt")
+    print(f"-> Saved data to ./data/processed")
+    
+
+if __name__ == "__main__":
+    main()

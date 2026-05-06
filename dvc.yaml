@@ -1,0 +1,36 @@
+stages:
+  prepare_data:
+    cmd: python src/data_prep.py
+    deps:
+      - data/raw
+      - src/data_prep.py
+    params:
+      - base.image_shape
+      - improvements.use_z_score
+    outs:
+      - data/processed
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/processed
+      - src/model.py
+      - src/train.py
+    params:
+      - base
+      - improvements
+    outs:
+      - models/model.pth
+    plots:
+      - training_logs.csv:
+          x: epoch
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - models/model.pth
+      - data/processed
+      - src/evaluate.py
+    metrics:
+      - metrics.json:
+          cache: false

@@ -30,17 +30,17 @@ stages:
     deps:
     - path: data/processed
       hash: md5
-      md5: 6a2721d158ab9e2d065c0454c16dd663.dir
-      size: 265866044
+      md5: 0154d200c537808f0de37641fb234bfb.dir
+      size: 265867452
       nfiles: 2
     - path: src/model.py
       hash: md5
-      md5: 158164979ac2a1893cc8ff5bad175ac3
-      size: 4092
+      md5: c01a1b6533182b3cbb88c9ddea7a3338
+      size: 4892
     - path: src/train.py
       hash: md5
-      md5: 3199333fcb6baae80caea76c498ce360
-      size: 2923
+      md5: cd478dd708f5ef444c8b303816a6bb2d
+      size: 2839
     params:
       params.yaml:
         base:
@@ -57,38 +57,38 @@ stages:
         improvements:
           use_relu: true
           use_advanced_activation: false
-          use_z_score: false
-          use_batch_norm: false
+          use_z_score: true
+          use_batch_norm: true
           use_he_initialization: false
           use_skip_connection: false
           reduce_learning_rate: false
     outs:
     - path: models/model.pth
       hash: md5
-      md5: 1fd0582c98af223c47917d1ea263a890
-      size: 16098729
+      md5: 55c0acf476364259110df3b3b2019c88
+      size: 35566815
     - path: training_logs.csv
       hash: md5
-      md5: 5af83a1198de5bfe7dce40e389164f7b
-      size: 638
+      md5: 24f13726f4f97fc483f4a2b17adcf333
+      size: 635
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/processed
       hash: md5
-      md5: 6a2721d158ab9e2d065c0454c16dd663.dir
-      size: 265866044
+      md5: 0154d200c537808f0de37641fb234bfb.dir
+      size: 265867452
       nfiles: 2
     - path: models/model.pth
       hash: md5
-      md5: 1fd0582c98af223c47917d1ea263a890
-      size: 16098729
+      md5: 55c0acf476364259110df3b3b2019c88
+      size: 35566815
     - path: src/evaluate.py
       hash: md5
-      md5: da9499b3b6713964a5beed1fcbb23a0e
-      size: 1649
+      md5: 59bb2836620b96aea404cdc6d778c3dc
+      size: 1592
     outs:
     - path: metrics.json
       hash: md5
-      md5: 5f6249fa3507c0392fa5a7eca272d402
+      md5: 93e0d3d229e5e38ec7ae84c932f40ce7
       size: 61

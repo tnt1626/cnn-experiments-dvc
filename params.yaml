@@ -11,10 +11,10 @@ base:
   optimizer: adam
 
 improvements:
-  use_relu: false
+  use_relu: true
   use_advanced_activation: false
   use_z_score: true
-  use_batch_norm: false
+  use_batch_norm: true
   use_he_initialization: false
   use_skip_connection: false
   reduce_learning_rate: false

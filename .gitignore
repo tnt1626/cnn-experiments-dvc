@@ -223,5 +223,3 @@ models
 
 data/processed/
 *.pt
-
-metrics.json

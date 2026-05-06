@@ -24,7 +24,7 @@ class PinteeCNN(nn.Module):
             self._batch_norm(64)
         )
         self.conv_layer2 = nn.Sequential(
-            nn.Conv2d(64, 64, 3, stride=1, padding='same'), self.activation,
+            nn.Conv2d(64, 64, 3, stride=1, padding='same'),
             self._batch_norm(64)
         )
         self.conv_layer3 = nn.Sequential(
@@ -38,7 +38,7 @@ class PinteeCNN(nn.Module):
             self._batch_norm(128)
         )
         self.conv_layer5 = nn.Sequential(
-            nn.Conv2d(128, 128, 3, stride=1, padding='same'), self.activation,
+            nn.Conv2d(128, 128, 3, stride=1, padding='same'),
             self._batch_norm(128)
         )
         self.conv_layer6 = nn.Sequential(
@@ -52,7 +52,7 @@ class PinteeCNN(nn.Module):
             self._batch_norm(256)
         )
         self.conv_layer8 = nn.Sequential(
-            nn.Conv2d(256, 256, 3, stride=1, padding='same'), self.activation,
+            nn.Conv2d(256, 256, 3, stride=1, padding='same'),
             self._batch_norm(256)
         )
         self.conv_layer9 = nn.Sequential(
@@ -60,9 +60,23 @@ class PinteeCNN(nn.Module):
             self._batch_norm(256),
             nn.MaxPool2d(2)
         )
-        # Block 4: (batch_size, 256, 4, 4) -> (batch_size, 256 * 4 * 4) -> (batch_size, 512) -> (batch_size, 10)
+        # Block 3.5: (batch_size, 256, 4, 4) -> (batch_size, 512, 2, 2)
+        self.conv_layer10 = nn.Sequential(
+            nn.Conv2d(256, 512, 3, stride=1, padding='same'), self.activation,
+            self._batch_norm(512)
+        )
+        self.conv_layer11 = nn.Sequential(
+            nn.Conv2d(512, 512, 3, stride=1, padding='same'),
+            self._batch_norm(512)
+        )
+        self.conv_layer12 = nn.Sequential(
+            nn.Conv2d(512, 512, 3, stride=1, padding='same'), self.activation, 
+            self._batch_norm(512),
+            nn.MaxPool2d(2)
+        )
+        # Block 4: (batch_size, 512, 2, 2) -> (batch_size, 512 * 2 * 2) -> (batch_size, 512) -> (batch_size, 10)
         self.flatten = nn.Flatten()
-        self.fc_layer1 = nn.Sequential(nn.Linear(256*4*4, 512))
+        self.fc_layer1 = nn.Sequential(nn.Linear(512*2*2, 512), self.activation)
         self.fc_layer2 = nn.Sequential(nn.Linear(512, n_classes))
 
         self._initialize_weights()
@@ -78,31 +92,46 @@ class PinteeCNN(nn.Module):
         for m in self.modules():
             if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
                 if use_he:
-                    nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+                    nn.init.kaiming_normal_(m.weight, mode='fan_out')
                 else:
                     nn.init.xavier_normal_(m.weight)
 
     def forward(self, x):
-        identity = x
+        # Block 1
         x = self.conv_layer1(x)
+        identity = x
         x = self.conv_layer2(x)
+        if self.use_skip_connection:
+            x = x + identity
+        x = self.activation(x)
         x = self.conv_layer3(x)
-        if self.use_skip_connection:
-            x = x + identity
 
-        identity = x
+        # Block 2
         x = self.conv_layer4(x)
-        x = self.conv_layer5(x)
-        x = self.conv_layer6(x)
-        if self.use_skip_connection:
-            x = x + identity
-
         identity = x
-        x = self.conv_layer7(x)
-        x = self.conv_layer8(x)
-        x = self.conv_layer9(x)
+        x = self.conv_layer5(x)
         if self.use_skip_connection:
             x = x + identity
+        x = self.activation(x)
+        x = self.conv_layer6(x)
+
+        # Block 3
+        x = self.conv_layer7(x)
+        identity = x
+        x = self.conv_layer8(x)
+        if self.use_skip_connection:
+            x = x + identity
+        x = self.activation(x)
+        x = self.conv_layer9(x)
+
+        # Block 4
+        x = self.conv_layer10(x)
+        identity = x
+        x = self.conv_layer11(x)
+        if self.use_skip_connection:
+            x = x + identity
+        x = self.activation(x)
+        x = self.conv_layer12(x)
 
         x = self.flatten(x)
         x = self.fc_layer1(x)

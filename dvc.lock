@@ -10,20 +10,20 @@ stages:
       nfiles: 9
     - path: src/data_prep.py
       hash: md5
-      md5: 54cd4eb6f99b62e48e58fe5fc4ab886a
-      size: 2440
+      md5: ba340c48424895648dad505a062c24a8
+      size: 2365
     params:
       params.yaml:
         base.image_shape:
         - 3
         - 32
         - 32
-        improvements.use_z_score: false
+        improvements.use_z_score: true
     outs:
     - path: data/processed
       hash: md5
-      md5: 6a2721d158ab9e2d065c0454c16dd663.dir
-      size: 265866044
+      md5: 0154d200c537808f0de37641fb234bfb.dir
+      size: 265867452
       nfiles: 2
   train:
     cmd: python src/train.py

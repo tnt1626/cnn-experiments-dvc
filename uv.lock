@@ -377,6 +377,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "pyyaml" },
+    { name = "torch-summary" },
 ]
 
 [package.metadata]
@@ -385,6 +386,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.10.9" },
     { name = "numpy", specifier = ">=2.4.4" },
     { name = "pyyaml", specifier = ">=6.0.3" },
+    { name = "torch-summary", specifier = ">=1.4.5" },
 ]
 
 [[package]]
@@ -1925,6 +1927,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/c3/af/14b24e41977adb296d6bd1fb59402cf7d60ce364f90c890bd2ec65c43b5a/tomlkit-0.14.0.tar.gz", hash = "sha256:cf00efca415dbd57575befb1f6634c4f42d2d87dbba376128adb42c121b87064", size = 187167, upload-time = "2026-01-13T01:14:53.304Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b5/11/87d6d29fb5d237229d67973a6c9e06e048f01cf4994dee194ab0ea841814/tomlkit-0.14.0-py3-none-any.whl", hash = "sha256:592064ed85b40fa213469f81ac584f67a4f2992509a7c3ea2d632208623a3680", size = 39310, upload-time = "2026-01-13T01:14:51.965Z" },
+]
+
+[[package]]
+name = "torch-summary"
+version = "1.4.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ff/2f/57cb3b23bccae7fc639ab7ff8bb78c80f03e8c0a144bbc69bfd26b0757f7/torch_summary-1.4.5.tar.gz", hash = "sha256:44eac21777dbbda7b8404d57a43c09d83fd9c93d0c1f0c960b5083ccb24d6d21", size = 17228, upload-time = "2020-12-24T05:00:32.266Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/db/93d18c84f73b214acfa4d18051d6f4263eee3e044c408928e8abe941a22c/torch_summary-1.4.5-py3-none-any.whl", hash = "sha256:6127efb631f34ba8cbd28e92e8f7ddc2903ea0cbc44c80f15b7363b8f558cd8c", size = 16161, upload-time = "2020-12-24T05:00:30.969Z" },
 ]
 
 [[package]]
